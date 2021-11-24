@@ -10,5 +10,5 @@ After cd to this repo's root
 python3 -m venv .venv
 source .venv/bin/activate
 
-python parsers.py
+python run_tests.py
 ```
