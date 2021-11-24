@@ -1,4 +1,13 @@
-def json_stringify(value):
+def safe(char):
+    escape = '\\'
+    escape_needed = {'"', '\\'}
+    if char in escape_needed:
+        return escape + char
+    else:
+        return char
+
+
+def stringify(value):
     if value is None:
         return "null"
     if value is True:
@@ -9,18 +18,16 @@ def json_stringify(value):
         return str(value)
     if isinstance(value, str):
         separator = ''
-        children = (
-            '\\' + char if char in ['"', "\\"] else char for char in value
-        )
+        children = (safe(char) for char in value)
         return '"' + separator.join(children) + '"'
     if isinstance(value, list):
         separator = ', '
-        children = (json_stringify(child) for child in value)
+        children = (stringify(child) for child in value)
         return '[' + separator.join(children) + ']'
     if isinstance(value, dict):
         separator = ', '
         children = (
-            json_stringify(key) + ': ' + json_stringify(value)
+            stringify(key) + ': ' + stringify(value)
             for key, value in value.items()
         )
         return '{' + separator.join(children) + '}'
