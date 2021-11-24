@@ -1,71 +1,26 @@
-import unittest
-
-
-def json_parse(string):
-    if string == "null":
-        return None
-    if string == "true":
-        return True
-    if string == "false":
-        return False
-    if string.lstrip("-").isnumeric():
-        return int(string)
-    if string.startswith('"') and string.endswith('"'):
-        inside = string[1:-1]
-        return inside
-    if string.startswith("[") and string.endswith("]"):
-        inside = string[1:-1]
-        if inside == "":
-            return []
-        strings = inside.split(",")
-        return [json_parse(string.strip()) for string in strings]
-
-
-class JSONParseTestCase(unittest.TestCase):
-    def test_null(self):
-        self.assertEqual(json_parse("null"), None)
-
-    def test_true(self):
-        self.assertEqual(json_parse("true"), True)
-
-    def test_false(self):
-        self.assertEqual(json_parse("false"), False)
-
-    def test_integer(self):
-        self.assertEqual(json_parse("6"), 6)
-
-    def test_negative_integer(self):
-        self.assertEqual(json_parse("-8"), -8)
-
-    def test_string(self):
-        self.assertEqual(json_parse('"foo"'), "foo")
-
-    def test_empty_array(self):
-        self.assertEqual(json_parse("[]"), [])
-
-    def test_array(self):
-        self.assertEqual(
-            json_parse('[null, true, false, 1996, "", "bar"]'),
-            [None, True, False, 1996, "", "bar"],
+def json_stringify(value):
+    if value is None:
+        return "null"
+    if value is True:
+        return "true"
+    if value is False:
+        return "false"
+    if isinstance(value, int):
+        return str(value)
+    if isinstance(value, str):
+        separator = ''
+        children = (
+            '\\' + char if char in ['"', "\\"] else char for char in value
         )
-
-    # def test_empty_object(self):
-    #     self.assertEqual(json_parse("{}"), {})
-
-    # def test_object(self):
-    #     self.assertEqual(
-    #         json_parse('{"age": 28, "name": "Jimmy Lin"}'),
-    #         {"age": 28, "name": "Jimmy Lin"},
-    #     )
-
-    # def test_nested(self):
-    #     self.assertEqual(
-    #         json_parse(
-    #             '{"name": "Jimmy Lin", "languages": ["English", "Chinese"]}'
-    #         ),
-    #         {"name": "Jimmy Lin", "languages": ["English", "Chinese"]},
-    #     )
-
-
-if __name__ == "__main__":
-    unittest.main()
+        return '"' + separator.join(children) + '"'
+    if isinstance(value, list):
+        separator = ', '
+        children = (json_stringify(child) for child in value)
+        return '[' + separator.join(children) + ']'
+    if isinstance(value, dict):
+        separator = ', '
+        children = (
+            json_stringify(key) + ': ' + json_stringify(value)
+            for key, value in value.items()
+        )
+        return '{' + separator.join(children) + '}'
