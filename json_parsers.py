@@ -1,6 +1,6 @@
 def safe(char):
-    escape = '\\'
-    escape_needed = {'"', '\\'}
+    escape = "\\"
+    escape_needed = {'"', "\\"}
     if char in escape_needed:
         return escape + char
     else:
@@ -17,17 +17,28 @@ def stringify(value):
     if isinstance(value, int):
         return str(value)
     if isinstance(value, str):
-        separator = ''
+        separator = ""
         children = (safe(char) for char in value)
         return '"' + separator.join(children) + '"'
     if isinstance(value, list):
-        separator = ', '
+        separator = ", "
         children = (stringify(child) for child in value)
-        return '[' + separator.join(children) + ']'
+        return "[" + separator.join(children) + "]"
     if isinstance(value, dict):
-        separator = ', '
+        separator = ", "
         children = (
-            stringify(key) + ': ' + stringify(value)
+            stringify(key) + ": " + stringify(value)
             for key, value in value.items()
         )
-        return '{' + separator.join(children) + '}'
+        return "{" + separator.join(children) + "}"
+
+
+def parse(string):
+    if string == "null":
+        return None
+    if string == "true":
+        return True
+    if string == "false":
+        return False
+    if string.lstrip("-").isnumeric():
+        return int(string)
