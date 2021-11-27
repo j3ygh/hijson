@@ -46,16 +46,20 @@ def parse(string):
         value = ""
         escaped = False
         for char in string[1:]:
-            if not escaped:
-                if char == '"':
-                    return value
-                if char == "\\":
-                    escaped = True
-                else:
-                    value += char
             if escaped:
                 if char in {'"', "\\"}:
                     value += char
                     escaped = False
                 else:
                     raise ValueError("Unterminated string.")
+            else:
+                if char == '"':
+                    return value
+                if char == "\\":
+                    escaped = True
+                else:
+                    value += char
+    if string.startswith("["):
+        return []
+    if string.startswith("{"):
+        return {}
