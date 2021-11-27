@@ -122,6 +122,22 @@ class JsonParseTestCase(unittest.TestCase):
         value = "-8"
         self.assertEqual(parse(value), json.loads(value))
 
+    def test_empty_string(self):
+        value = '""'
+        self.assertEqual(parse(value), json.loads(value))
+
+    def test_single_letter_string(self):
+        value = '"f"'
+        self.assertEqual(parse(value), json.loads(value))
+
+    def test_string(self):
+        value = '"oo"'
+        self.assertEqual(parse(value), json.loads(value))
+
+    def test_strange_string(self):
+        value = '"\\"\'\\\\"'
+        self.assertEqual(parse(value), json.loads(value))
+
 
 if __name__ == "__main__":
     unittest.main()

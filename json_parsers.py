@@ -42,3 +42,20 @@ def parse(string):
         return False
     if string.lstrip("-").isnumeric():
         return int(string)
+    if string.startswith('"'):
+        value = ""
+        escaped = False
+        for char in string[1:]:
+            if not escaped:
+                if char == '"':
+                    return value
+                if char == "\\":
+                    escaped = True
+                else:
+                    value += char
+            if escaped:
+                if char in {'"', "\\"}:
+                    value += char
+                    escaped = False
+                else:
+                    raise ValueError("Unterminated string.")
