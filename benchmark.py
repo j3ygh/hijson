@@ -3,7 +3,7 @@ import ujson
 import hijson
 
 from timeit import timeit
-from sample_values import values
+from sample import sample_values, index
 from pandas import DataFrame
 
 NUMBER = 10000
@@ -25,7 +25,7 @@ libs = {
 
 columns = list(libs.keys())
 rows = []
-for value in values:
+for value in sample_values:
     row = []
     for lib, funcs in libs.items():
         dumps_func = funcs["dumps"]
@@ -34,5 +34,5 @@ for value in values:
         row.append(round(time, NDIGITS))
     rows.append(row)
 
-df = DataFrame(rows, columns=columns)
+df = DataFrame(rows, columns=columns, index=index)
 print(df)
