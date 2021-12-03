@@ -63,3 +63,7 @@ def parse(string):
         return []
     if string.startswith("{"):
         return {}
+
+
+dumps = stringify
+loads = parse
